@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
    LOCK SYSTEM (SAFE & STABLE)
 ================================ */
 let input = [];
-const correct = "123456";
+const correct = "070766";
 
 /* กดตัวเลข */
 function press(n){
@@ -147,8 +147,8 @@ document.addEventListener("mousemove", e=>{
 
   card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
 });
-heart.addEventListener("pointerdown", e => {
-  e.preventDefault();
+heart.addEventListener("pointerdown", e=>{
+  e.preventDefault();   // ⭐ ตัวนี้สำคัญมาก
   hold = true;
 });
 
