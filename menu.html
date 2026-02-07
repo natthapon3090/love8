@@ -10,9 +10,14 @@ html,body{
   margin:0;
   padding:0;
   height:100%;
-  background:linear-gradient(180deg,#f8eef3,#fff);
+  background:
+    radial-gradient(circle at top, #ffe3f0 0%, #f8eef3 40%, #ffffff 75%);
   font-family:"Segoe UI",sans-serif;
   overflow:hidden;
+
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
 }
 
 /* ===== START HEART ===== */
@@ -31,6 +36,7 @@ html,body{
   clip-path:path("M80 140 C20 90 0 60 20 35 C40 10 70 25 80 45 C90 25 120 10 140 35 C160 60 140 90 80 140 Z");
   position:relative;
   overflow:hidden;
+  touch-action:none;
 }
 
 .fill{
@@ -82,17 +88,16 @@ html,body{
   font-weight:800;
   letter-spacing:1px;
   background: linear-gradient(135deg, #c94a77, #f28fb1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 4px 18px rgba(232,76,127,.35);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:0 4px 18px rgba(232,76,127,.35);
 }
 
 .header span{
   font-size:12px;
   color:#a65b79;
 }
-
 
 /* ===== IMAGE ===== */
 .image{
@@ -115,7 +120,7 @@ html,body{
   text-align:center;
 }
 
-/* ===== ANNIVERSARY COUNTER ===== */
+/* ===== COUNTER ===== */
 .counter{
   margin-top:10px;
   padding:10px 12px;
@@ -164,21 +169,6 @@ html,body{
   50%{height:32px}
   100%{height:12px}
 }
-
-/* ===== NEXT PAGE BUTTON ===== */
-.next-btn{
-  margin:16px auto 0;
-  display:block;
-  padding:10px 26px;
-  border:none;
-  border-radius:22px;
-  background:linear-gradient(135deg,#e84c7f,#f28fb1);
-  color:#fff;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer;
-  box-shadow:0 10px 24px rgba(232,76,127,.4);
-}
 </style>
 </head>
 
@@ -188,7 +178,7 @@ html,body{
   <div class="heart" id="heart">
     <div class="fill" id="fill"></div>
   </div>
-  <div class="hint">กดหัวใจค้างไว้ 💗</div>
+  <div class="hint">แตะหัวใจ 💗</div>
 </div>
 
 <div class="gui" id="gui">
@@ -203,17 +193,13 @@ html,body{
 
     <div class="text" id="text"></div>
 
-    <!-- 💗 COUNTER -->
     <div class="counter" id="counter"></div>
 
-    <!-- 🎵 MUSIC -->
     <div class="wave-btn" onclick="toggleMusic()">
       <div class="wave" id="wave">
         <span></span><span></span><span></span><span></span><span></span>
       </div>
     </div>
-
-  
 
   </div>
 </div>
@@ -223,33 +209,33 @@ html,body{
 </audio>
 
 <script>
-/* ===== HEART HOLD ===== */
+/* ===== HEART AUTO FILL (TAP ONCE) ===== */
 const heart=document.getElementById("heart");
 const fill=document.getElementById("fill");
 const gui=document.getElementById("gui");
 const music=document.getElementById("music");
 const wave=document.getElementById("wave");
 
-let p=0,hold=false,done=false;
+let percent=0, started=false;
 
-heart.addEventListener("pointerdown",()=>hold=true);
-heart.addEventListener("pointerup",()=>hold=false);
-heart.addEventListener("pointerleave",()=>hold=false);
+heart.addEventListener("pointerdown", e=>{
+  e.preventDefault();
+  if(started) return;
+  started=true;
 
-setInterval(()=>{
-  if(hold && !done){
-    p++;
-    fill.style.height=p+"%";
-    if(p>=100){
-      done=true;
+  const timer=setInterval(()=>{
+    percent++;
+    fill.style.height=percent+"%";
+    if(percent>=100){
+      clearInterval(timer);
       gui.style.display="flex";
       music.play();
       wave.classList.add("playing");
       showSlide();
       typeText();
     }
-  }
-},25);
+  },25);
+});
 
 /* ===== SLIDES ===== */
 const slides=[
@@ -296,21 +282,20 @@ function toggleMusic(){
 }
 
 /* ===== ANNIVERSARY ===== */
-const startDate = new Date("2023-07-07T00:00:00"); // 👈 แก้วันคบตรงนี้
-const counter = document.getElementById("counter");
+const startDate=new Date("2023-07-07T00:00:00");
+const counter=document.getElementById("counter");
 
 function updateCounter(){
   const now=new Date();
-  let diff=now-startDate;
+  let d=now-startDate;
+  const days=Math.floor(d/86400000);
+  d%=86400000;
+  const h=Math.floor(d/3600000);
+  d%=3600000;
+  const m=Math.floor(d/60000);
+  const s=Math.floor((d%60000)/1000);
 
-  const days=Math.floor(diff/(1000*60*60*24));
-  diff%=1000*60*60*24;
-  const hrs=Math.floor(diff/(1000*60*60));
-  diff%=1000*60*60;
-  const mins=Math.floor(diff/(1000*60));
-  const secs=Math.floor((diff%60000)/1000);
-
-  counter.innerHTML=`คบกันมาแล้ว 💗<br>${days} วัน ${hrs} ชม. ${mins} นาที ${secs} วิ`;
+  counter.innerHTML=`คบกันมาแล้ว 💗<br>${days} วัน ${h} ชม. ${m} นาที ${s} วิ`;
 }
 updateCounter();
 setInterval(updateCounter,1000);
