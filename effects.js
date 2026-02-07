@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
    LOCK SYSTEM (SAFE & STABLE)
 ================================ */
 let input = [];
-const correct = "070766";
+const correct = "123456";
 
 /* กดตัวเลข */
 function press(n){
@@ -151,5 +151,6 @@ heart.addEventListener("pointerdown", e=>{
   e.preventDefault();   // ⭐ ตัวนี้สำคัญมาก
   hold = true;
 });
+
 
 
