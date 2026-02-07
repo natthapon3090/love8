@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gift Surprise</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#fff8fc,#ffe6f2 45%,#ffd4ea);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* ===== CARD ===== */
+.card{
+  width:clamp(320px,90vw,420px);
+  background:linear-gradient(180deg,#ffffff,#fff5fb);
+  border-radius:36px;
+  padding:42px 28px 48px;
+  text-align:center;
+  box-shadow:0 40px 90px rgba(255,150,200,.55);
+}
+
+/* ===== GIFT SCENE ===== */
+.gift-scene{
+  position:relative;
+  width:240px;
+  height:200px;
+  margin:30px auto 10px;
+  perspective:900px;
+}
+
+/* shadow */
+.shadow{
+  position:absolute;
+  bottom:18px;
+  left:50%;
+  width:180px;
+  height:36px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.35),transparent 70%);
+  transform:translateX(-50%);
+  filter:blur(12px);
+}
+
+/* ===== GIFT (SIDE VIEW) ===== */
+.gift{
+  position:absolute;
+  bottom:34px;
+  left:50%;
+  width:150px;
+  height:110px;
+  transform:translateX(-50%) rotateY(-25deg) rotateX(6deg);
+  transform-style:preserve-3d;
+  cursor:pointer;
+}
+
+/* box front */
+.box-front{
+  position:absolute;
+  width:150px;
+  height:110px;
+  background:linear-gradient(180deg,#ff9fc9,#ff7eb6);
+  border-radius:18px;
+  box-shadow:
+    inset 0 -6px 10px rgba(0,0,0,.15),
+    0 18px 36px rgba(255,120,180,.55);
+}
+
+/* box side */
+.box-side{
+  position:absolute;
+  width:26px;
+  height:98px;
+  background:linear-gradient(180deg,#ff8dbf,#ff6fae);
+  right:-26px;
+  top:6px;
+  transform:skewY(-12deg);
+  border-radius:0 16px 16px 0;
+}
+
+/* ribbon vertical */
+.ribbon-v{
+  position:absolute;
+  left:50%;
+  top:0;
+  width:16px;
+  height:100%;
+  background:rgba(255,255,255,.75);
+  transform:translateX(-50%);
+}
+
+/* ribbon horizontal */
+.ribbon-h{
+  position:absolute;
+  top:50%;
+  width:100%;
+  height:16px;
+  background:rgba(255,255,255,.75);
+  transform:translateY(-50%);
+}
+
+/* ===== BOW ===== */
+.bow{
+  position:absolute;
+  top:-22px;
+  left:50%;
+  transform:translateX(-50%);
+  width:40px;
+  height:20px;
+}
+.bow::before,
+.bow::after{
+  content:"";
+  position:absolute;
+  width:20px;
+  height:16px;
+  background:#fff;
+  border-radius:50%;
+}
+.bow::before{left:0}
+.bow::after{right:0}
+
+/* ===== LID (OPEN SIDE) ===== */
+.lid{
+  position:absolute;
+  top:-30px;
+  left:0;
+  width:150px;
+  height:40px;
+  background:linear-gradient(180deg,#ffc3de,#ff9fc9);
+  border-radius:22px;
+  transform-origin:left center;
+  transition:.9s cubic-bezier(.25,1.6,.4,1);
+  box-shadow:0 14px 26px rgba(255,120,180,.55);
+}
+
+/* glow */
+.glow{
+  position:absolute;
+  inset:-50px;
+  background:radial-gradient(circle,#ffd6eb,transparent 65%);
+  opacity:0;
+  transition:.7s ease;
+}
+
+/* opened */
+.gift.open .lid{
+  transform:rotateY(-110deg) translateX(-20px);
+}
+.gift.open .glow{
+  opacity:1;
+}
+
+/* ===== POPUP ===== */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+.popup.show{display:flex}
+
+.popup-box{
+  background:white;
+  border-radius:28px;
+  padding:26px 24px;
+  width:90%;
+  max-width:320px;
+  text-align:center;
+  box-shadow:0 30px 70px rgba(255,140,190,.6);
+  animation:pop .45s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.6);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.next-btn{
+  margin-top:16px;
+  width:100%;
+  padding:13px 0;
+  border:none;
+  border-radius:22px;
+  font-size:15px;
+  font-weight:600;
+  color:white;
+  background:linear-gradient(135deg,#ff9fc9,#ffc3de);
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2 style="color:#c94c85">ของขวัญพิเศษ 🎁</h2>
+  <p style="font-size:14px;color:#a85a7b">มองจากมุมข้าง ลองเปิดดูสิ</p>
+
+  <div class="gift-scene">
+    <div class="shadow"></div>
+
+    <div class="gift" id="gift">
+      <div class="glow"></div>
+
+      <div class="lid"></div>
+
+      <div class="box-front">
+        <div class="ribbon-v"></div>
+        <div class="ribbon-h"></div>
+        <div class="bow"></div>
+      </div>
+
+      <div class="box-side"></div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <p style="font-size:15px;color:#7a3b56;line-height:1.8">
+      ข้างในกล่องนี้  
+      คือเรื่องราวของเรา 💗
+    </p>
+    <button class="next-btn" onclick="goNext()">
+      ไปหน้าถัดไป 💕
+    </button>
+  </div>
+</div>
+
+<script>
+const gift = document.getElementById("gift");
+const popup = document.getElementById("popup");
+let opened = false;
+
+gift.addEventListener("click",()=>{
+  if(opened) return;
+  opened = true;
+  gift.classList.add("open");
+  setTimeout(()=>popup.classList.add("show"),900);
+});
+
+function goNext(){
+  location.href = "lock.html";
+}
+</script>
+
+</body>
+</html>

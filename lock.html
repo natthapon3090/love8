@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+
+<style>
+/* ===== BACKGROUND DEPTH ===== */
+body{
+  background:
+    radial-gradient(circle at top,#ffeaf4,#ffb7d8 45%,#ff7fb6);
+}
+
+/* ===== LOCK WRAPPER ===== */
+.lock-wrapper{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+}
+
+/* ===== CARD (GLASS + DEPTH) ===== */
+.card{
+  width:100%;
+  max-width:380px;
+  padding:26px 22px 30px;
+  border-radius:28px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,.2));
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 40px 80px rgba(255,90,150,.45),
+    inset 0 0 0 1px rgba(255,255,255,.5);
+  animation:cardFloat 6s ease-in-out infinite;
+}
+
+/* subtle float */
+@keyframes cardFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+/* ===== PIN DOTS ===== */
+.pin{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin:20px 0 28px;
+}
+.pin div{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#ffd1e6;
+  box-shadow:
+    0 0 14px rgba(255,120,180,.7),
+    inset 0 -2px 4px rgba(255,255,255,.6);
+  animation:pinPulse 2.5s ease-in-out infinite;
+}
+.pin div:nth-child(odd){
+  animation-delay:1.2s;
+}
+@keyframes pinPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.25)}
+}
+
+/* ===== KEYPAD GRID ===== */
+.keypad{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+/* ===== NUMBER BUTTON (3D) ===== */
+.keypad button{
+  aspect-ratio:1/1;
+  border-radius:20px;
+  border:none;
+  font-size:22px;
+  font-weight:700;
+  color:#fff;
+  background:
+    linear-gradient(145deg,#ff6fb3,#ff94cc);
+  box-shadow:
+    0 14px 28px rgba(255,90,150,.45),
+    inset 0 -6px 10px rgba(0,0,0,.18);
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:.2s ease;
+}
+
+/* LIGHT SWEEP */
+.keypad button::before{
+  content:"";
+  position:absolute;
+  inset:-60%;
+  background:
+    linear-gradient(120deg,transparent 45%,rgba(255,255,255,.7),transparent 55%);
+  transform:translateX(-100%) rotate(25deg);
+  transition:.6s;
+}
+.keypad button:hover::before{
+  transform:translateX(100%) rotate(25deg);
+}
+
+/* PRESS */
+.keypad button:active{
+  transform:translateY(4px) scale(.95);
+  box-shadow:
+    0 6px 14px rgba(255,90,150,.3),
+    inset 0 6px 10px rgba(0,0,0,.25);
+}
+
+/* ZERO CENTER */
+.keypad button:nth-child(10){
+  grid-column:2/3;
+}
+
+/* CONFIRM BUTTON (DEPTH MAX) */
+.keypad button:last-child{
+  grid-column:1/4;
+  aspect-ratio:auto;
+  padding:16px 0;
+  font-size:18px;
+  letter-spacing:1px;
+  background:
+    linear-gradient(135deg,#ff3f8f,#ff79b0);
+  box-shadow:
+    0 20px 40px rgba(255,70,130,.55),
+    inset 0 -6px 10px rgba(0,0,0,.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="lock-wrapper">
+  <div class="card">
+    <h1 class="type">กรอกรหัสผ่าน 🔒</h1>
+    <p class="type">คำใบ้ : วันเเรกที่เราคบกัน</p>
+
+    <div class="pin">
+      <div></div><div></div><div></div>
+      <div></div><div></div><div></div>
+    </div>
+
+    <div class="keypad">
+      <button onclick="press(1)">1</button>
+      <button onclick="press(2)">2</button>
+      <button onclick="press(3)">3</button>
+      <button onclick="press(4)">4</button>
+      <button onclick="press(5)">5</button>
+      <button onclick="press(6)">6</button>
+      <button onclick="press(7)">7</button>
+      <button onclick="press(8)">8</button>
+      <button onclick="press(9)">9</button>
+      <button onclick="press(0)">0</button>
+      <button onclick="confirmPin()">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+<div class="popup-lock" id="popup">
+  <div class="popup-box">
+    <h2 id="popupTitle"></h2>
+    <p id="popupText"></p>
+    <button class="btn" onclick="closePopup()">โอเค</button>
+  </div>
+</div>
+
+<script src="effects.js"></script>
+</body>
+</html>
